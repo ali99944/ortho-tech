@@ -1,0 +1,161 @@
+import React, { useState } from 'react'
+import { Button } from '../../../components/button';
+import { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown-menu';
+import { Input } from '../../../components/input';
+import { Modal } from '../../../components/modal';
+import { addCase } from '../../../services/cases';
+import { WebsiteName, CaseStatus, NewPatientCaseInput } from '../../../types/case';
+
+interface CreateCaseModalProps {
+  isOpen: boolean
+  onClose: () => void
+}
+
+const WEBSITE_OPTIONS: Array<{ value: WebsiteName; label: string }> = [
+  { value: 'softSmile', label: 'SoftSmile' },
+  { value: 'orthero', label: 'Orthero' },
+  { value: 'DSmile', label: 'DSmile' },
+]
+
+const STATUS_OPTIONS: Array<{ value: CaseStatus; label: string }> = [
+  { value: 'open', label: 'Open' },
+  { value: 'closed', label: 'Closed' },
+]
+
+export function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProps) {
+  const [formData, setFormData] = useState<NewPatientCaseInput>({
+    patientName: '',
+    doctorName: '',
+    websiteName: 'softSmile',
+    status: 'open',
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!formData.patientName.trim() || !formData.doctorName.trim()) return
+
+    setIsSubmitting(true)
+    try {
+      await addCase(formData)
+      onClose()
+      setFormData({
+        patientName: '',
+        doctorName: '',
+        websiteName: 'softSmile',
+        status: 'open',
+      })
+    } catch (error) {
+      console.error('Failed to create case:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleClose = () => {
+    if (!isSubmitting) {
+      onClose()
+      setFormData({
+        patientName: '',
+        doctorName: '',
+        websiteName: 'softSmile',
+        status: 'open',
+      })
+    }
+  }
+
+  return (
+    <Modal
+        open={isOpen}
+        onClose={handleClose}
+        title="Create New Case"
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="ghost" onClick={handleClose} disabled={isSubmitting}>
+              Cancel
+            </Button>
+            <Button type="submit" form="create-case-form" disabled={isSubmitting || !formData.patientName.trim() || !formData.doctorName.trim()}>
+              {isSubmitting ? 'Creating...' : 'Create Case'}
+            </Button>
+          </div>
+        }
+    >
+      <form id="create-case-form" onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-text mb-1">
+            Patient Name
+          </label>
+          <Input
+            value={formData.patientName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData((prev: NewPatientCaseInput) => ({ ...prev, patientName: e.target.value }))
+            }
+            placeholder="Enter patient name"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text mb-1">
+            Doctor Name
+          </label>
+          <Input
+            value={formData.doctorName}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData((prev: NewPatientCaseInput) => ({ ...prev, doctorName: e.target.value }))
+            }
+            placeholder="Enter doctor name"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text mb-1">
+            Website
+          </label>
+          <DropdownMenu
+            trigger={
+              <Button variant="ghost" className="w-full justify-between">
+                {WEBSITE_OPTIONS.find((opt) => opt.value === formData.websiteName)?.label}
+                <span>▼</span>
+              </Button>
+            }
+          >
+            {WEBSITE_OPTIONS.map((option) => (
+              <DropdownMenuItem
+                key={option.value}
+                onSelect={() =>
+                  setFormData((prev: NewPatientCaseInput) => ({ ...prev, websiteName: option.value }))
+                }
+              >
+                {option.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenu>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text mb-1">
+            Status
+          </label>
+          <DropdownMenu
+            trigger={
+              <Button variant="ghost" className="w-full justify-between">
+                {STATUS_OPTIONS.find((opt) => opt.value === formData.status)?.label}
+                <span>▼</span>
+              </Button>
+            }
+          >
+            {STATUS_OPTIONS.map((option) => (
+              <DropdownMenuItem
+                key={option.value}
+                onSelect={() =>
+                  setFormData((prev: NewPatientCaseInput) => ({ ...prev, status: option.value }))
+                }
+              >
+                {option.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenu>
+        </div>
+      </form>
+    </Modal>
+  )
+}

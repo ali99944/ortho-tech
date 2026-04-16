@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { PatientCase, WebsiteName, CaseStatus } from '../types/case'
+import { PatientCase, WebsiteName } from '../types/case'
 import { Modal } from './modal'
 import { ModalFooter } from './modal-footers'
 import { Input } from './input'
@@ -26,34 +26,30 @@ export function CaseEditModal({ open, onClose, caseItem, onSave }: CaseEditModal
   const [patientName, setPatientName] = useState(caseItem.patientName)
   const [doctorName, setDoctorName]   = useState(caseItem.doctorName)
   const [websiteName, setWebsiteName] = useState<WebsiteName>(caseItem.websiteName)
-  const [status, setStatus]           = useState<CaseStatus>(caseItem.status)
 
   useEffect(() => {
     if (open) {
       setPatientName(caseItem.patientName)
       setDoctorName(caseItem.doctorName)
       setWebsiteName(caseItem.websiteName)
-      setStatus(caseItem.status)
     }
   }, [open, caseItem])
 
   const handleSave = () => {
-    onSave({ ...caseItem, patientName, doctorName, websiteName, status, updatedAt: new Date() })
+    onSave({ ...caseItem, patientName, doctorName, websiteName, updatedAt: new Date() })
   }
 
   const handleCancel = () => {
     setPatientName(caseItem.patientName)
     setDoctorName(caseItem.doctorName)
     setWebsiteName(caseItem.websiteName)
-    setStatus(caseItem.status)
     onClose()
   }
 
   const isDirty =
     patientName !== caseItem.patientName ||
     doctorName  !== caseItem.doctorName  ||
-    websiteName !== caseItem.websiteName ||
-    status      !== caseItem.status
+    websiteName !== caseItem.websiteName
 
   return (
     <Modal
@@ -144,32 +140,6 @@ export function CaseEditModal({ open, onClose, caseItem, onSave }: CaseEditModal
           </DropdownMenu>
         </div>
 
-        {/* Status */}
-        <div className="flex flex-col gap-1">
-          <label className="text-[10px] font-medium text-text-muted uppercase tracking-wider">
-            Status
-          </label>
-          <DropdownMenu
-            trigger={
-              <div className={`h-7 w-full border border-border rounded px-2 text-xs flex items-center justify-between gap-2 transition-colors`}>
-                <span className="capitalize">{status}</span>
-                <svg className="w-4 h-4 opacity-50 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
-                  <polyline points="6 9 12 15 18 9" />
-                </svg>
-              </div>
-            }
-            triggerClassName="w-full justify-start"
-            side="bottom"
-            align="start"
-          >
-            <DropdownMenuCheckItem checked={status === 'open'} onCheckedChange={() => setStatus('open')}>
-              Open
-            </DropdownMenuCheckItem>
-            <DropdownMenuCheckItem checked={status === 'closed'} onCheckedChange={() => setStatus('closed')}>
-              Closed
-            </DropdownMenuCheckItem>
-          </DropdownMenu>
-        </div>
 
         {/* Timestamps — read-only */}
         {/* <div className="col-span-2 border-t border-border pt-4 grid grid-cols-2 gap-4">

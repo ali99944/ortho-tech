@@ -32,6 +32,7 @@ type DropdownMenuItemProps = {
 	icon?: ReactNode
 	shortcut?: string
 	variant?: 'default' | 'danger'
+	selected?: boolean
 	disabled?: boolean
 	onSelect?: () => void
 	children: ReactNode
@@ -216,6 +217,7 @@ export function DropdownMenuItem({
 	icon,
 	shortcut,
 	variant = 'default',
+	selected = false,
 	disabled,
 	onSelect,
 	children,
@@ -243,7 +245,9 @@ export function DropdownMenuItem({
         ${
 			variant === 'danger'
 				? 'bg-danger-tint text-danger-tint-text hover:bg-danger focus:bg-danger hover:text-danger-text focus:text-danger-text'
-				: 'text-text font-medium hover:bg-card-hover hover:text-primary-tint-text focus:bg-surface-raised'
+				: selected
+					? 'bg-primary text-primary-text hover:bg-primary focus:bg-primary'
+					: 'text-text font-medium hover:bg-card-hover hover:text-primary-tint-text focus:bg-surface-raised'
 		}
       `}
 		>

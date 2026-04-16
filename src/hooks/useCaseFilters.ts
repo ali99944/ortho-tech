@@ -1,10 +1,10 @@
-import type { PatientCase, CaseStatusFilter, CaseStepFilter } from '../types/case'
+import type { PatientCase, CaseStepFilter, CaseImportantFilter } from '../types/case'
 
 export function useCaseFilters(
   cases: PatientCase[],
   searchQuery: string,
-  statusFilter: CaseStatusFilter,
   stepFilter: CaseStepFilter,
+  importantFilter: CaseImportantFilter,
 ) {
   return cases.filter((caseItem) => {
     // Search filter - checks patient name, doctor name, and website name
@@ -16,8 +16,12 @@ export function useCaseFilters(
 
     if (!matchesSearch) return false
 
-    // Status filter
-    if (statusFilter !== 'all' && caseItem.status !== statusFilter) {
+    // Important filter
+    if (importantFilter === 'important' && !caseItem.isImportant) {
+      return false
+    }
+
+    if (importantFilter === 'notImportant' && caseItem.isImportant) {
       return false
     }
 

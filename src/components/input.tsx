@@ -26,11 +26,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={id}
           className={[
-            'bg-input rounded-sm text-text text-[13px] font-[inherit]',
-            'px-2 py-1 outline-none w-full',
+            'bg-input rounded text-text text-[13px] font-[inherit]',
+            'px-2 py-1 outline-none ',
             'placeholder:text-text-faint',
             'transition-colors duration-100',
-            'border-2 border-border/60 focus:border-primary',
+            'border border-border focus:border-primary',
             'disabled:bg-surface-raised disabled:border-surface-raised disabled:text-text-faint disabled:cursor-not-allowed',
             error ? 'border-danger! border placeholder:text-muted!' : '',
             className

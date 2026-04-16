@@ -1,8 +1,7 @@
 export type WebsiteName = 'softSmile' | 'orthero' | 'DSmile'
-export type CaseStatus = 'open' | 'closed'
-export type CaseStatusFilter = 'all' | CaseStatus
 export type CaseStep = 'stl' | 'printing' | 'stacking' | 'finishing' | 'delivered'
 export type CaseStepFilter = 'all' | 'empty' | CaseStep
+export type CaseImportantFilter = 'all' | 'important' | 'notImportant'
 
 export interface CaseStepDetail { 
   completed: boolean
@@ -17,13 +16,19 @@ export interface CaseSteps {
   delivered: CaseStepDetail
 }
 
+export interface JawFile {
+  jaw_stl_file: string
+  jaw_name: string
+}
+
 export interface PatientCase {
   id: string
   patientName: string
   doctorName: string
   websiteName: WebsiteName
-  status: CaseStatus
   steps: CaseSteps
+  jawFiles: JawFile[]
+  isImportant: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -32,7 +37,6 @@ export interface NewPatientCaseInput {
   patientName: string
   doctorName: string
   websiteName: WebsiteName
-  status: CaseStatus
 }
 
 export const CASE_STEP_OPTIONS: Array<{
@@ -59,11 +63,10 @@ export const PRODUCTION_STEP_OPTIONS: Array<{
   { value: 'delivered', label: 'Delivered' },
 ]
 
-export const CASE_STATUS_OPTIONS: Array<{
-  value: CaseStatusFilter
+export const CASE_IMPORTANT_OPTIONS: Array<{
+  value: CaseImportantFilter
   label: string
 }> = [
-  { value: 'all', label: 'All' },
-  { value: 'open', label: 'Open' },
-  { value: 'closed', label: 'Closed' },
+  { value: 'all', label: 'All Cases' },
+  { value: 'important', label: 'Important Only' },
 ]

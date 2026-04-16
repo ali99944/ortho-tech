@@ -9,32 +9,32 @@ import { AnimatePresence, motion } from "motion/react"
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { Button } from "../button"
 import {
-  CASE_STATUS_OPTIONS,
   CASE_STEP_OPTIONS,
-  type CaseStatusFilter,
+  CASE_IMPORTANT_OPTIONS,
   type CaseStepFilter,
+  type CaseImportantFilter,
 } from "../../types/case"
 
 interface DashboardToolbarProps {
   searchValue: string
-  statusFilter: CaseStatusFilter
   stepFilter: CaseStepFilter
+  importantFilter: CaseImportantFilter
   onSearchValueChange: (value: string) => void
-  onStatusFilterChange: (value: CaseStatusFilter) => void
   onStepFilterChange: (value: CaseStepFilter) => void
+  onImportantFilterChange: (value: CaseImportantFilter) => void
   onCreateCase?: () => void
 }
 
-function StatusFilterGroup({
+function ImportantFilterGroup({
   value,
   onChange,
 }: {
-  value: CaseStatusFilter
-  onChange: (value: CaseStatusFilter) => void
+  value: CaseImportantFilter
+  onChange: (value: CaseImportantFilter) => void
 }) {
   return (
     <div className="flex items-center gap-1 rounded-2xl border border-border bg-card/70 p-1">
-      {CASE_STATUS_OPTIONS.map((option) => {
+      {CASE_IMPORTANT_OPTIONS.map((option) => {
         const isActive = option.value === value
 
         return (
@@ -49,7 +49,7 @@ function StatusFilterGroup({
           >
             {isActive ? (
               <motion.span
-                layoutId="status-filter-highlight"
+                layoutId="important-filter-highlight"
                 className="absolute inset-0 rounded-xl bg-surface shadow-[0_10px_24px_rgba(14,14,14,0.08)]"
                 transition={{ type: "spring", stiffness: 320, damping: 26 }}
               />
@@ -219,10 +219,10 @@ function SearchField({
 
 export default function DashboardToolbar({
   searchValue,
-  statusFilter,
+  importantFilter,
   stepFilter,
   onSearchValueChange,
-  onStatusFilterChange,
+  onImportantFilterChange,
   onStepFilterChange,
   onCreateCase,
 }: DashboardToolbarProps) {
@@ -246,7 +246,7 @@ export default function DashboardToolbar({
 
       <div className="flex flex-col gap-2 xl:flex-row xl:items-center">
         <SearchField value={searchValue} onChange={onSearchValueChange} />
-        <StatusFilterGroup value={statusFilter} onChange={onStatusFilterChange} />
+        <ImportantFilterGroup value={importantFilter} onChange={onImportantFilterChange} />
         <StepFilterDropdown value={stepFilter} onChange={onStepFilterChange} />
       </div>
     </div>

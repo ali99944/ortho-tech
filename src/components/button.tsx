@@ -33,7 +33,7 @@ const tintVariantClasses: Record<ButtonVariant, string> = {
   primary:
     'bg-primary-tint text-primary-tint-text hover:bg-primary-tint/80 font-medium',
   secondary:
-    'bg-secondary-tint text-secondary-tint-text hover:bg-secondary hover:text-secondary-text',
+    'bg-secondary-tint text-secondary-tint-text hover:bg-secondary/30',
   accent: 'bg-accent-tint text-accent-tint-text hover:bg-accent hover:text-accent-text',
   ghost:
     'bg-transparent text-text  hover:bg-[#E7E5DF] hover:text-text',

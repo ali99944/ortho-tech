@@ -16,6 +16,7 @@ import {
 } from '../lib/firebase'
 import type {
   CaseSteps,
+  JawFile,
   NewPatientCaseInput,
   PatientCase,
 } from '../types/case'
@@ -34,7 +35,6 @@ const previewCases: PatientCase[] = [
     patientName: 'Hend Abdelkader',
     doctorName: 'Mahmoud Amarny',
     websiteName: 'softSmile',
-    status: 'open',
     steps: {
       stl: { completed: true, notes: 'Design approved' },
       printing: { completed: false },
@@ -42,6 +42,8 @@ const previewCases: PatientCase[] = [
       finishing: { completed: false },
       delivered: { completed: false },
     },
+    jawFiles: [],
+    isImportant: false,
     updatedAt: new Date('2026-04-11T08:30:00'),
     createdAt: new Date('2026-04-11T08:30:00'),
   },
@@ -50,7 +52,6 @@ const previewCases: PatientCase[] = [
     patientName: 'Ahmad Nakhash',
     doctorName: 'Ramy Adel',
     websiteName: 'orthero',
-    status: 'open',
     steps: {
       stl: { completed: true },
       printing: { completed: true, notes: 'Printed successfully' },
@@ -58,6 +59,8 @@ const previewCases: PatientCase[] = [
       finishing: { completed: false },
       delivered: { completed: false },
     },
+    jawFiles: [],
+    isImportant: false,
     updatedAt: new Date('2026-04-10T14:10:00'),
     createdAt: new Date('2026-04-11T08:30:00'),
   },
@@ -66,7 +69,6 @@ const previewCases: PatientCase[] = [
     patientName: 'Maram Nassar',
     doctorName: 'Ahmed Sayed',
     websiteName: 'DSmile',
-    status: 'closed',
     steps: {
       stl: { completed: true },
       printing: { completed: true },
@@ -74,6 +76,8 @@ const previewCases: PatientCase[] = [
       finishing: { completed: true },
       delivered: { completed: true, notes: 'Delivered to patient' },
     },
+    jawFiles: [],
+    isImportant: true,
     updatedAt: new Date('2026-04-08T10:45:00'),
     createdAt: new Date('2026-04-11T08:30:00'), 
   },
@@ -82,7 +86,6 @@ const previewCases: PatientCase[] = [
     patientName: 'Shahd Abo Asab',
     doctorName: 'Mahmoud Amarny',
     websiteName: 'softSmile',
-    status: 'open',
     steps: {
       stl: { completed: false },
       printing: { completed: false },
@@ -90,6 +93,8 @@ const previewCases: PatientCase[] = [
       finishing: { completed: false },
       delivered: { completed: false },
     },
+    jawFiles: [],
+    isImportant: false,
     updatedAt: new Date('2026-04-06T17:15:00'),
     createdAt: new Date('2026-04-11T08:30:00'),
   },
@@ -128,8 +133,9 @@ function normalizeCase(rawCase: Record<string, unknown>, id: string): PatientCas
     patientName: String(rawCase['patientName'] ?? ''),
     doctorName: String(rawCase['doctorName'] ?? ''),
     websiteName: (rawCase['websiteName'] as PatientCase['websiteName']) ?? 'softSmile',
-    status: rawCase['status'] === 'closed' ? 'closed' : 'open',
     steps: normalizeSteps(rawCase['steps'] as Partial<CaseSteps> | undefined),
+    jawFiles: (rawCase['jawFiles'] as JawFile[]) ?? [],
+    isImportant: Boolean(rawCase['isImportant'] ?? false),
     updatedAt: toDate(rawCase['updatedAt']),
     createdAt: toDate(rawCase['createdAt']),
   }
@@ -169,8 +175,9 @@ export async function addCase(input: NewPatientCaseInput) {
     patientName: input.patientName.trim(),
     doctorName: input.doctorName.trim(),
     websiteName: input.websiteName,
-    status: input.status,
     steps: EMPTY_STEPS,
+    jawFiles: [],
+    isImportant: false,
     updatedAt: new Date(),
     createdAt: new Date(),
   }

@@ -4,7 +4,7 @@ import { Button } from '../../../components/button'
 import { DropdownMenu, DropdownMenuCheckItem, DropdownMenuLabel, DropdownMenuSeparator } from '../../../components/dropdown-menu'
 import { PlusIcon, Filter } from 'lucide-react'
 import { useCaseFilterStore } from '../../../stores/caseFilterStore'
-import { CASE_STATUS_OPTIONS, CASE_STEP_OPTIONS } from '../../../types/case'
+import { CASE_STEP_OPTIONS, CASE_IMPORTANT_OPTIONS } from '../../../types/case'
 import { cn } from '../../../lib/cn'
 
 interface ToolbarProps {
@@ -13,16 +13,16 @@ interface ToolbarProps {
 
 function Toolbar({ onAddNewPatient }: ToolbarProps) {
   const searchQuery = useCaseFilterStore((state) => state.searchQuery)
-  const statusFilter = useCaseFilterStore((state) => state.statusFilter)
   const stepFilter = useCaseFilterStore((state) => state.stepFilter)
+  const importantFilter = useCaseFilterStore((state) => state.importantFilter)
   const setSearchQuery = useCaseFilterStore((state) => state.setSearchQuery)
-  const setStatusFilter = useCaseFilterStore((state) => state.setStatusFilter)
   const setStepFilter = useCaseFilterStore((state) => state.setStepFilter)
+  const setImportantFilter = useCaseFilterStore((state) => state.setImportantFilter)
 
   // Get display labels for selected filters
-  const statusLabel = useMemo(
-    () => CASE_STATUS_OPTIONS.find((opt) => opt.value === statusFilter)?.label || 'All',
-    [statusFilter]
+  const importantLabel = useMemo(
+    () => CASE_IMPORTANT_OPTIONS.find((opt) => opt.value === importantFilter)?.label || 'All Cases',
+    [importantFilter]
   )
 
   const stepLabel = useMemo(
@@ -44,7 +44,7 @@ function Toolbar({ onAddNewPatient }: ToolbarProps) {
         onChange={(e) => setSearchQuery(e.target.value)}
       />
 
-      {/* Status Filter Dropdown */}
+      {/* Important Filter Dropdown */}
       <DropdownMenu
         trigger={
           <div className={cn(
@@ -54,19 +54,19 @@ function Toolbar({ onAddNewPatient }: ToolbarProps) {
           )}>
             <div className="flex items-center gap-2 h-full">
               <Filter className='w-4 h-4' />
-              <span className='text-xs'>status - {statusLabel}</span>
+              <span className='text-xs'>important - {importantLabel}</span>
             </div>
           </div>
         }
       >
-        <DropdownMenuLabel>Filter by Status</DropdownMenuLabel>
+        <DropdownMenuLabel>Filter by Importance</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {CASE_STATUS_OPTIONS.map((option) => (
+        {CASE_IMPORTANT_OPTIONS.map((option) => (
           <DropdownMenuCheckItem
             key={option.value}
-            checked={statusFilter === option.value}
-            onCheckedChange={() => setStatusFilter(option.value)}
-            group="status"
+            checked={importantFilter === option.value}
+            onCheckedChange={() => setImportantFilter(option.value)}
+            group="important"
           >
             {option.label}
           </DropdownMenuCheckItem>

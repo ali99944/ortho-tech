@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import Toolbar from './components/toolbar'
-import { CaseItem } from './components/case-item'
+import { CaseTable } from './components/case-table'
 import { CreateCaseModal } from './components/create-case-modal'
 import { subscribeToCases, updateCase, deleteCase } from '../../services/cases'
 import { useCaseFilters } from '../../hooks/useCaseFilters'
 import { useCaseFilterStore } from '../../stores/caseFilterStore'
 import type { PatientCase } from '../../types/case'
-import { Pagination } from './components/pagination'
-import { CaseListHeader } from './components/case-list-header'
+
 
 function Dashboard() {
   const [allCases, setAllCases] = useState<PatientCase[]>([])
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const searchQuery = useCaseFilterStore((state) => state.searchQuery)
-  const statusFilter = useCaseFilterStore((state) => state.statusFilter)
   const stepFilter = useCaseFilterStore((state) => state.stepFilter)
+  const importantFilter = useCaseFilterStore((state) => state.importantFilter)
 
-  const PER_PAGE = 6
+  const PER_PAGE = 10
   const [page, setPage] = useState(1)
   
   // Reset page when filters change
-  useEffect(() => setPage(1), [searchQuery, statusFilter, stepFilter])
+  useEffect(() => setPage(1), [searchQuery, stepFilter, importantFilter])
 
   // Subscribe to cases from Firebase/preview
   useEffect(() => {
@@ -33,7 +32,7 @@ function Dashboard() {
   }, [])
   
   // Apply filters
-  const filteredCases = useCaseFilters(allCases, searchQuery, statusFilter, stepFilter)
+  const filteredCases = useCaseFilters(allCases, searchQuery, stepFilter, importantFilter)
   const paginated = filteredCases.slice((page - 1) * PER_PAGE, page * PER_PAGE)
 
   const handleDeleteCase = async (id: string) => {
@@ -60,36 +59,33 @@ function Dashboard() {
   }
 
   return (
-    <div className="p-3 max-w-7xl mx-auto">
-      <Toolbar onAddNewPatient={() => setIsCreateModalOpen(true)} />
+    <div className="p-3 max-w-7xl pt-4 mx-auto">
+        <Toolbar onAddNewPatient={() => setIsCreateModalOpen(true)} />
       {/* Cases section */}
       
-      <div className="mt-6">
+      <div className="mt-4">
         {paginated.length === 0 ? (
-          <div className="text-center py-12 text-text-muted">
-            <p>No cases found</p>
+          <div className="bg-white rounded-md p-6 text-center">
+            <div className="flex flex-col items-center justify-center">
+              
+              <p className="text-2xl font-medium text-text mb-1">No cases found</p>
+              <p className="text-sm text-text-muted">Try adjusting your filters or create a new case</p>
+            </div>
           </div>
         ) : (
-          <div className="grid gap-2">
-            <CaseListHeader />
-            {paginated.map((caseItem) => (
-              <CaseItem
-                key={caseItem.id}
-                caseItem={caseItem}
-                onDelete={handleDeleteCase}
-                onUpdate={handleUpdateCase}
-              />
-            ))}
-          </div>
+          <CaseTable
+            cases={paginated}
+            onDelete={handleDeleteCase}
+            onUpdate={handleUpdateCase}
+            currentPage={page}
+            totalPages={Math.ceil(filteredCases.length / PER_PAGE)}
+            totalItems={filteredCases.length}
+            perPage={PER_PAGE}
+            onPageChange={setPage}
+          />
         )}
       </div>
-      <Pagination
-        currentPage={page}
-        totalPages={Math.ceil(filteredCases.length / PER_PAGE)}
-        totalItems={filteredCases.length}
-        perPage={PER_PAGE}
-        onPageChange={setPage}
-      />
+
       <CreateCaseModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}

@@ -23,7 +23,7 @@ export function Pagination({
   const pages = buildPageSequence(currentPage, totalPages)
 
   return (
-    <div className="flex items-center justify-between pt-3 mt-2">
+    <div className="flex items-center justify-between mt-2 ">
       <span className="text-[12px] text-text-muted">
         Showing {start}–{end} of {totalItems} cases
       </span>

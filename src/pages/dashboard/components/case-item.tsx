@@ -62,11 +62,11 @@ export function CaseItem({ caseItem, onDelete, onUpdate }: CaseItemProps) {
       {/* Row */}
       <div
         className={cn(
-          'grid items-center gap-2 border border-secondary-tint rounded',
+          'grid items-center gap-2  border-secondary-tint rounded',
           'pl-2.75 pr-3 py-1.75',
           '',
         //   STRIPE[stage.key],
-          'hover:bg-[#f9f9f9] transition-colors',
+          'bg-white transition-colors',
         )}
         style={{ gridTemplateColumns: '2fr 1.2fr 1.5fr 1fr 80px' }}
       >

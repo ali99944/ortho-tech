@@ -4,7 +4,7 @@ import { DropdownMenu, DropdownMenuItem } from '../../../components/dropdown-men
 import { Input } from '../../../components/input';
 import { Modal } from '../../../components/modal';
 import { addCase } from '../../../services/cases';
-import { WebsiteName, CaseStatus, NewPatientCaseInput } from '../../../types/case';
+import { WebsiteName, NewPatientCaseInput } from '../../../types/case';
 
 interface CreateCaseModalProps {
   isOpen: boolean
@@ -17,17 +17,11 @@ const WEBSITE_OPTIONS: Array<{ value: WebsiteName; label: string }> = [
   { value: 'DSmile', label: 'DSmile' },
 ]
 
-const STATUS_OPTIONS: Array<{ value: CaseStatus; label: string }> = [
-  { value: 'open', label: 'Open' },
-  { value: 'closed', label: 'Closed' },
-]
-
 export function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProps) {
   const [formData, setFormData] = useState<NewPatientCaseInput>({
     patientName: '',
     doctorName: '',
     websiteName: 'softSmile',
-    status: 'open',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -43,7 +37,6 @@ export function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProps) {
         patientName: '',
         doctorName: '',
         websiteName: 'softSmile',
-        status: 'open',
       })
     } catch (error) {
       console.error('Failed to create case:', error)
@@ -59,7 +52,6 @@ export function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProps) {
         patientName: '',
         doctorName: '',
         websiteName: 'softSmile',
-        status: 'open',
       })
     }
   }
@@ -86,6 +78,8 @@ export function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProps) {
             Patient Name
           </label>
           <Input
+            wrapperClassName="w-full"
+            className="w-full"
             value={formData.patientName}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData((prev: NewPatientCaseInput) => ({ ...prev, patientName: e.target.value }))
@@ -99,6 +93,8 @@ export function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProps) {
             Doctor Name
           </label>
           <Input
+            wrapperClassName="w-full"
+            className="w-full"
             value={formData.doctorName}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setFormData((prev: NewPatientCaseInput) => ({ ...prev, doctorName: e.target.value }))
@@ -112,6 +108,7 @@ export function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProps) {
             Website
           </label>
           <DropdownMenu
+            triggerClassName="w-full"
             trigger={
               <Button variant="ghost" className="w-full justify-between">
                 {WEBSITE_OPTIONS.find((opt) => opt.value === formData.websiteName)?.label}
@@ -122,32 +119,9 @@ export function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProps) {
             {WEBSITE_OPTIONS.map((option) => (
               <DropdownMenuItem
                 key={option.value}
+                selected={option.value === formData.websiteName}
                 onSelect={() =>
                   setFormData((prev: NewPatientCaseInput) => ({ ...prev, websiteName: option.value }))
-                }
-              >
-                {option.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenu>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-text mb-1">
-            Status
-          </label>
-          <DropdownMenu
-            trigger={
-              <Button variant="ghost" className="w-full justify-between">
-                {STATUS_OPTIONS.find((opt) => opt.value === formData.status)?.label}
-                <span>▼</span>
-              </Button>
-            }
-          >
-            {STATUS_OPTIONS.map((option) => (
-              <DropdownMenuItem
-                key={option.value}
-                onSelect={() =>
-                  setFormData((prev: NewPatientCaseInput) => ({ ...prev, status: option.value }))
                 }
               >
                 {option.label}

@@ -75,7 +75,7 @@ export function Modal({
         <AnimatedPanel
           variant="modal"
           className={cn(
-            'relative flex flex-col bg-surface rounded-md',
+            'relative flex flex-col bg-surface rounded',
             'max-w-[calc(100vw-32px)] max-h-[calc(100vh-48px)]',
             sizeMap[size],
             className,
